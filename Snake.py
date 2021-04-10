@@ -4,7 +4,7 @@ import random
 
 class Snake:
 
-    def __init__(self,map_size = 20, speed = 0.15):
+    def __init__(self,map_size = 20, speed = 0.15, theme = 'pale'):
         self.map_size = map_size
         self.gmap = np.zeros((self.map_size,self.map_size,3))
         self.speed = speed
@@ -14,7 +14,19 @@ class Snake:
         self.fig, self.ax = plt.subplots()
         self.dir = 'R'
         self.score = 0
-        self.fsmb_color = [[0,255,0],[255,90,90],[90,90,90],[140,140,140]]
+        self.theme = {'pale':[[0,255,0],
+                            [255,90,90],
+                            [90,90,90],
+                            [140,140,140]],
+                      'hi_con':[[0,255,0],
+                            [255,0,0],
+                            [0,0,0],
+                            [0,0,255]],
+                      'fallout':[[26,255,128],
+                            [26,255,128],
+                            [1,20,9],
+                            [26,255,128]]}
+        self.fsmb_color = self.theme[theme]
         status = 1
         while status != 0:
             status = self.render(None,None)
@@ -33,7 +45,7 @@ class Snake:
         self.gmap[self.food[0],self.food[1]] = self.fsmb_color[0]
         head = self.snake_queue[0]
         if head == self.food:
-            self.gmap[self.food[0],self.food[1]] = self.fsmb_color[1x]
+            self.gmap[self.food[0],self.food[1]] = self.fsmb_color[1]
             self.score += 1
             self.eat_food = True
         else: 
@@ -79,4 +91,4 @@ class Snake:
         elif event.key == 'd':
             if self.dir != 'L':self.dir = 'R'
             
-Snake()
+Snake(theme='pale')
