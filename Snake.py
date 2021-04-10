@@ -8,7 +8,7 @@ class Snake:
         self.map_size = map_size
         self.gmap = np.zeros((self.map_size,self.map_size,3))
         self.speed = speed
-        self.food = [random.randint(1,self.map_size-1),random.randint(1,self.map_size-1)]
+        self.food = [random.randint(2,self.map_size-2),random.randint(2,self.map_size-2)]
         self.eat_food = False
         self.snake_queue = [[4,4],[4,3],[4,2]]
         self.fig, self.ax = plt.subplots()
@@ -27,10 +27,11 @@ class Snake:
                             [1,20,9],
                             [26,255,128]]}
         self.fsmb_color = self.theme[theme]
+        self.fig.canvas.mpl_connect('key_press_event', self.on_press)
         status = 1
         while status != 0:
             status = self.render(None,None)
-            print(self.dir)
+        plt.close()
     
     def render(self,food,snake):
         self.gmap = np.full((self.map_size,self.map_size,3),self.fsmb_color[2])
@@ -52,20 +53,20 @@ class Snake:
             self.eat_food = False
         if self.dir == 'R':
             dir = [head[0],head[1]+1]
-            stat = self.check_death(dir)
+
         elif self.dir == 'L':
             dir = [head[0],head[1] - 1]
-            stat = self.check_death(dir)
+
         elif self.dir == 'U':
             dir = [head[0]-1,head[1]]
-            stat = self.check_death(dir)
+
         elif self.dir == 'D':
             dir = [head[0]+1,head[1]]
-            stat = self.check_death(dir)
+
+        self.ax.imshow(self.gmap)
+        stat = self.check_death(dir)
         if stat == 0: return stat
         self.walk(dir,self.eat_food)
-        self.ax.imshow(self.gmap)
-        self.fig.canvas.mpl_connect('key_press_event', self.on_press)
         plt.pause(self.speed)
         plt.cla()
 
@@ -75,10 +76,11 @@ class Snake:
             self.snake_queue.pop()
 
     def check_death(self,dir):
-        if any([f >= self.map_size or f < 0 for f in dir]):
+        if any([f >= self.map_size or f < 0 for f in dir]) or dir in self.snake_queue:
             print('Game over')
             print('Score : ',self.score)
-            plt.close()
+            import time
+            time.sleep(1)
             return 0
 
     def on_press(self,event):
